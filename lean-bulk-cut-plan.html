@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bulk / Cut — High Protein Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C1B1A;
+    --cream:#F1EDE4;
+    --crimson:#C1272D;
+    --gold:#D4A24C;
+    --slate:#4A5A6A;
+    --line: rgba(28,27,26,0.12);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px 80px;}
+
+  /* HERO */
+  .hero{
+    background:var(--ink);
+    color:var(--cream);
+    padding:56px 20px 44px;
+    margin-bottom:0;
+  }
+  .hero-inner{max-width:900px;margin:0 auto;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0 0 10px;
+  }
+  h1{
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    font-size:clamp(34px,7vw,58px);
+    line-height:0.98;
+    margin:0 0 14px;
+  }
+  .hero p{
+    font-size:15px;
+    line-height:1.6;
+    color:rgba(241,237,228,0.75);
+    max-width:520px;
+    margin:0;
+  }
+  .stat-row{
+    display:flex;
+    gap:28px;
+    margin-top:28px;
+    flex-wrap:wrap;
+  }
+  .stat{
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .stat .n{font-size:22px;font-weight:600;color:var(--cream);}
+  .stat .l{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold);}
+
+  .assumption{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:rgba(241,237,228,0.55);
+    margin-top:24px;
+    border-top:1px solid rgba(241,237,228,0.15);
+    padding-top:16px;
+  }
+
+  /* EDITABLE STATS PANEL */
+  .editor{
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    padding:24px 20px;
+  }
+  .editor-inner{max-width:900px;margin:0 auto;}
+  .editor-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:16px;
+  }
+  .editor-title{
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    font-size:14px;
+    letter-spacing:0.05em;
+    margin:0;
+  }
+  .editor-status{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--slate);
+    opacity:0;
+    transition:opacity 0.3s;
+  }
+  .editor-status.show{opacity:1;}
+  .editor-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:14px;
+  }
+  @media (max-width:700px){
+    .editor-grid{grid-template-columns:1fr 1fr;}
+  }
+  .editor-field label{
+    display:block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--slate);
+    margin-bottom:5px;
+  }
+  .editor-field input, .editor-field select{
+    width:100%;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    padding:9px 10px;
+    border:1.5px solid var(--ink);
+    border-radius:4px;
+    background:var(--cream);
+    color:var(--ink);
+  }
+  .editor-field input:focus, .editor-field select:focus{
+    outline:none;
+    border-color:var(--crimson);
+  }
+  .editor-btn{
+    margin-top:16px;
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    font-size:13px;
+    background:var(--ink);
+    color:var(--cream);
+    border:none;
+    padding:11px 22px;
+    border-radius:4px;
+    cursor:pointer;
+    transition:background 0.2s;
+  }
+  .editor-btn:hover{background:var(--crimson);}
+
+  /* TOGGLE — barbell slider */
+  .phase-toggle{
+    position:sticky;
+    top:0;
+    z-index:10;
+    background:var(--cream);
+    padding:22px 20px 18px;
+    border-bottom:1px solid var(--line);
+  }
+  .toggle-inner{
+    max-width:900px;margin:0 auto;
+    display:flex;align-items:center;justify-content:center;gap:18px;
+  }
+  .barbell-track{
+    position:relative;
+    width:260px;height:52px;
+    background:var(--ink);
+    border-radius:26px;
+    cursor:pointer;
+    display:flex;align-items:center;
+    padding:0 6px;
+    user-select:none;
+  }
+  .barbell-plate{
+    position:absolute;
+    top:4px;left:4px;
+    width:126px;height:44px;
+    background:var(--crimson);
+    border-radius:22px;
+    transition:transform 0.35s cubic-bezier(.65,0,.35,1);
+    box-shadow:0 2px 8px rgba(0,0,0,0.25);
+  }
+  .barbell-track.cut .barbell-plate{
+    transform:translateX(126px);
+    background:var(--gold);
+  }
+  .toggle-label{
+    position:relative;
+    z-index:2;
+    flex:1;
+    text-align:center;
+    font-family:'Oswald',sans-serif;
+    font-size:14px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:rgba(241,237,228,0.5);
+    transition:color 0.3s;
+  }
+  .toggle-label.active{color:var(--cream);}
+
+  .phase-caption{
+    text-align:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--slate);
+    margin-top:12px;
+  }
+
+  /* SECTIONS */
+  section.phase{display:none;padding-top:40px;}
+  section.phase.show{display:block;}
+
+  .phase-title{
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    font-size:26px;
+    font-weight:600;
+    margin:0 0 6px;
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  .phase-title .accent{
+    width:10px;height:10px;border-radius:50%;
+    display:inline-block;
+  }
+  .phase-sub{
+    font-size:14px;color:var(--slate);
+    margin:0 0 28px;
+    max-width:560px;
+    line-height:1.55;
+  }
+
+  /* MACRO NUTRITION-FACTS PANEL */
+  .macro-panel{
+    background:#fff;
+    border:2px solid var(--ink);
+    padding:20px 22px;
+    margin-bottom:34px;
+    max-width:340px;
+  }
+  .macro-panel h3{
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    font-size:20px;
+    margin:0 0 4px;
+    border-bottom:8px solid var(--ink);
+    padding-bottom:8px;
+  }
+  .macro-panel .kcal-row{
+    display:flex;justify-content:space-between;align-items:baseline;
+    border-bottom:4px solid var(--ink);
+    padding:8px 0;
+  }
+  .macro-panel .kcal-row .n{font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;}
+  .macro-line{
+    display:flex;justify-content:space-between;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    padding:7px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .macro-line .amt{font-weight:600;}
+  .bar-track{
+    height:6px;background:#eee;border-radius:3px;margin-top:4px;overflow:hidden;
+  }
+  .bar-fill{height:100%;border-radius:3px;}
+
+  /* MEAL CARDS */
+  .meal{
+    border-top:1px solid var(--line);
+    padding:22px 0;
+    display:grid;
+    grid-template-columns:70px 1fr auto;
+    gap:18px;
+    align-items:start;
+  }
+  .meal:last-child{border-bottom:1px solid var(--line);}
+  .meal-time{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--slate);
+    padding-top:3px;
+  }
+  .meal-name{
+    font-family:'Oswald',sans-serif;
+    font-size:16px;
+    text-transform:uppercase;
+    letter-spacing:0.02em;
+    margin:0 0 8px;
+  }
+  .meal-items{margin:0;padding:0;list-style:none;}
+  .meal-items li{
+    font-size:14px;
+    line-height:1.7;
+    color:#2b2a28;
+  }
+  .meal-items li .g{color:var(--slate);font-size:12.5px;}
+  .meal-macros{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    text-align:right;
+    white-space:nowrap;
+    color:var(--ink);
+    padding-top:3px;
+  }
+  .meal-macros .p{color:var(--crimson);font-weight:600;}
+
+  .day-total{
+    margin-top:6px;
+    padding:16px 0;
+    display:flex;
+    justify-content:space-between;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
+
+  .note{
+    margin-top:36px;
+    padding:16px 18px;
+    background:rgba(74,90,106,0.08);
+    border-left:3px solid var(--slate);
+    font-size:13px;
+    line-height:1.6;
+    color:var(--slate);
+  }
+
+  /* TIPS */
+  .tips-block{margin-top:40px;}
+  .tips-head{
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    font-size:15px;
+    letter-spacing:0.05em;
+    margin:0 0 14px;
+    color:var(--ink);
+  }
+  .tip-list{list-style:none;margin:0;padding:0;}
+  .tip-list li{
+    display:grid;
+    grid-template-columns:26px 1fr;
+    gap:10px;
+    padding:11px 0;
+    border-top:1px solid var(--line);
+    font-size:13.5px;
+    line-height:1.55;
+    color:#2b2a28;
+  }
+  .tip-list li:last-child{border-bottom:1px solid var(--line);}
+  .tip-num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    font-weight:600;
+    color:#fff;
+    background:var(--ink);
+    width:22px;height:22px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .tip-list.bulk .tip-num{background:var(--crimson);}
+  .tip-list.cut .tip-num{background:var(--gold);color:var(--ink);}
+
+  .avoid-list{list-style:none;margin:0;padding:0;}
+  .avoid-list li{
+    display:grid;
+    grid-template-columns:26px 1fr;
+    gap:10px;
+    padding:11px 0;
+    border-top:1px solid var(--line);
+    font-size:13.5px;
+    line-height:1.55;
+    color:#2b2a28;
+  }
+  .avoid-list li:last-child{border-bottom:1px solid var(--line);}
+  .avoid-x{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    font-weight:600;
+    color:var(--crimson);
+    width:22px;height:22px;
+    border-radius:50%;
+    border:1.5px solid var(--crimson);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .tips-head.avoid-head{color:var(--crimson);}
+
+  /* SUPPLEMENTS */
+  .supp-list{list-style:none;margin:0;padding:0;}
+  .supp-list li{
+    padding:13px 0;
+    border-top:1px solid var(--line);
+  }
+  .supp-list li:last-child{border-bottom:1px solid var(--line);}
+  .supp-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    flex-wrap:wrap;
+    gap:4px 14px;
+    margin-bottom:4px;
+  }
+  .supp-name{
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    font-size:14.5px;
+    letter-spacing:0.02em;
+  }
+  .supp-dose{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    font-weight:600;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+  .supp-note{
+    font-size:13px;
+    line-height:1.5;
+    color:var(--slate);
+    margin:0;
+    max-width:600px;
+  }
+  .supp-optional{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    color:var(--slate);
+    border:1px solid var(--slate);
+    border-radius:3px;
+    padding:1px 5px;
+    margin-left:6px;
+  }
+
+  /* TRAINING SPLIT */
+  .training{
+    margin-top:60px;
+    padding-top:44px;
+    border-top:2px solid var(--ink);
+  }
+  .day-card{
+    background:#fff;
+    border:1.5px solid var(--ink);
+    border-radius:6px;
+    margin-bottom:14px;
+    overflow:hidden;
+  }
+  .day-card summary{
+    list-style:none;
+    cursor:pointer;
+    padding:16px 18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .day-card summary::-webkit-details-marker{display:none;}
+  .day-card-head{display:flex;align-items:center;gap:10px;}
+  .day-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .day-name{
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    font-size:16px;
+    letter-spacing:0.02em;
+  }
+  .day-count{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--slate);
+  }
+  .day-chevron{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--slate);
+    transition:transform 0.25s;
+  }
+  .day-card[open] .day-chevron{transform:rotate(180deg);}
+  .day-body{
+    padding:0 18px 14px;
+    border-top:1px solid var(--line);
+  }
+  .ex-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .ex-row:last-child{border-bottom:none;}
+  .ex-row input[type="checkbox"]{
+    width:18px;height:18px;
+    accent-color:var(--crimson);
+    flex-shrink:0;
+    cursor:pointer;
+  }
+  .ex-name{
+    flex:1;
+    font-size:14px;
+    color:#2b2a28;
+    transition:color 0.2s, opacity 0.2s;
+  }
+  .ex-row.done .ex-name{
+    color:var(--slate);
+    text-decoration:line-through;
+    opacity:0.6;
+  }
+  .ex-sets{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+  .ex-row.done .ex-sets{opacity:0.5;}
+  .training-note{
+    font-size:13px;
+    color:var(--slate);
+    line-height:1.6;
+    margin:0 0 24px;
+    max-width:600px;
+  }
+
+  .general-tips{
+    margin-top:60px;
+    padding-top:44px;
+    border-top:2px solid var(--ink);
+  }
+  .general-title{
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    font-size:26px;
+    font-weight:600;
+    margin:0 0 6px;
+  }
+  .general-sub{
+    font-size:14px;color:var(--slate);
+    margin:0 0 26px;
+    max-width:600px;
+    line-height:1.55;
+  }
+  .tip-cols{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:32px;
+  }
+  @media (max-width:620px){
+    .tip-cols{grid-template-columns:1fr;}
+  }
+  .tip-col-head{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    margin:0 0 4px;
+  }
+
+  /* GLOSSARY */
+  .glossary{
+    margin-top:60px;
+    padding-top:44px;
+    border-top:2px solid var(--ink);
+  }
+  .glossary-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0 32px;
+  }
+  @media (max-width:620px){
+    .glossary-grid{grid-template-columns:1fr;}
+  }
+  .term{
+    border-top:1px solid var(--line);
+    padding:16px 0;
+  }
+  .term:last-child{border-bottom:1px solid var(--line);}
+  .term-head{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:6px;
+  }
+  .term-tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    padding:2px 7px;
+    border-radius:3px;
+    color:#fff;
+  }
+  .term-tag.bulk-tag{background:var(--crimson);}
+  .term-tag.cut-tag{background:var(--gold);color:var(--ink);}
+  .term-tag.both-tag{background:var(--slate);}
+  .term-name{
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    font-size:15px;
+    letter-spacing:0.02em;
+  }
+  .term-def{
+    font-size:13.5px;
+    line-height:1.6;
+    color:#2b2a28;
+    margin:0;
+  }
+
+  @media (max-width:560px){
+    .meal{grid-template-columns:1fr;gap:6px;}
+    .meal-time{order:0;}
+    .meal-macros{text-align:left;order:3;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .barbell-plate{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">Two-Phase Nutrition Plan</p>
+    <h1>Lean Bulk<br>→ Cut</h1>
+    <p>A high-protein meal structure built around your stats, split into a muscle-building phase and a fat-loss phase that follows it.</p>
+    <div class="stat-row">
+      <div class="stat"><div class="n" id="stat-weight">60 kg</div><div class="l">Bodyweight</div></div>
+      <div class="stat"><div class="n" id="stat-height">168 cm</div><div class="l">Height (5'6")</div></div>
+      <div class="stat"><div class="n" id="stat-bmi">~21.3</div><div class="l">BMI</div></div>
+    </div>
+    <div class="assumption">
+      Estimates use Mifflin-St Jeor with the age, sex, and activity level you set below. The numbers update instantly as your weight or height change through the journey.
+    </div>
+  </div>
+</div>
+
+<div class="editor">
+  <div class="editor-inner">
+    <div class="editor-head">
+      <p class="editor-title">Your stats</p>
+      <p class="editor-status" id="editor-status">Saved</p>
+    </div>
+    <div class="editor-grid">
+      <div class="editor-field">
+        <label for="in-weight">Weight (kg)</label>
+        <input type="number" id="in-weight" value="60" min="30" max="250" step="0.1">
+      </div>
+      <div class="editor-field">
+        <label for="in-height">Height (cm)</label>
+        <input type="number" id="in-height" value="168" min="120" max="230" step="0.1">
+      </div>
+      <div class="editor-field">
+        <label for="in-age">Age</label>
+        <input type="number" id="in-age" value="25" min="14" max="80" step="1">
+      </div>
+      <div class="editor-field">
+        <label for="in-sex">Sex</label>
+        <select id="in-sex">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+      <div class="editor-field">
+        <label for="in-activity">Activity</label>
+        <select id="in-activity">
+          <option value="1.2">Sedentary</option>
+          <option value="1.375">Light (1-3x/wk)</option>
+          <option value="1.55" selected>Moderate (3-5x/wk)</option>
+          <option value="1.725">Very active (6-7x/wk)</option>
+        </select>
+      </div>
+    </div>
+    <button class="editor-btn" onclick="recalculate(true)">Update plan</button>
+  </div>
+</div>
+
+<div class="phase-toggle">
+  <div class="toggle-inner">
+    <div class="barbell-track" id="track" onclick="setPhase(this.classList.contains('cut') ? 'bulk' : 'cut')">
+      <div class="barbell-plate"></div>
+      <div class="toggle-label active" id="label-bulk">Bulk</div>
+      <div class="toggle-label" id="label-cut">Cut</div>
+    </div>
+  </div>
+  <div class="phase-caption" id="caption">Phase 1 — build muscle in a modest surplus</div>
+</div>
+
+<div class="wrap">
+
+  <!-- BULK PHASE -->
+  <section class="phase show" id="phase-bulk">
+    <h2 class="phase-title"><span class="accent" style="background:var(--crimson)"></span>Lean Bulk</h2>
+    <p class="phase-sub">Modest surplus, high protein, training-fueled carbs. The goal is muscle, not just scale weight — expect ~0.25–0.5 kg gain per week.</p>
+
+    <div class="macro-panel">
+      <h3>Daily Target</h3>
+      <div class="kcal-row"><span>Calories</span><span class="n" id="bulk-kcal">~2750</span></div>
+      <div class="macro-line"><span>Protein</span><span class="amt" id="bulk-protein">~155 g</span></div>
+      <div class="bar-track"><div class="bar-fill" id="bulk-protein-bar" style="width:85%;background:var(--crimson)"></div></div>
+      <div class="macro-line"><span>Carbohydrate</span><span class="amt" id="bulk-carbs">~280 g</span></div>
+      <div class="bar-track"><div class="bar-fill" id="bulk-carbs-bar" style="width:70%;background:var(--gold)"></div></div>
+      <div class="macro-line"><span>Fat</span><span class="amt" id="bulk-fat">~85 g</span></div>
+      <div class="bar-track"><div class="bar-fill" id="bulk-fat-bar" style="width:45%;background:var(--slate)"></div></div>
+    </div>
+
+    <div class="meal">
+      <div class="meal-time">7:30 AM</div>
+      <div>
+        <p class="meal-name">Breakfast</p>
+        <ul class="meal-items">
+          <li>3 whole eggs + 3 egg whites, scrambled <span class="g">— 261 kcal</span></li>
+          <li>2 slices whole-wheat toast, 1 tbsp peanut butter <span class="g">— 235 kcal</span></li>
+          <li>1 banana <span class="g">— 105 kcal</span></li>
+        </ul>
+      </div>
+      <div class="meal-macros">601 kcal<br><span class="p">40g P</span> · 56g C · 25g F</div>
+    </div>
+
+    <div class="meal">
+      <div class="meal-time">10:30 AM</div>
+      <div>
+        <p class="meal-name">Mid-morning</p>
+        <ul class="meal-items">
+          <li>Greek yogurt, 200 g <span class="g">— 130 kcal</span></li>
+          <li>Granola, 40 g + 1 tbsp honey <span class="g">— 244 kcal</span></li>
+        </ul>
+      </div>
+      <div class="meal-macros">374 kcal<br><span class="p">24g P</span> · 53g C · 6g F</div>
+    </div>
+
+    <div class="meal">
+      <div class="meal-time">1:30 PM</div>
+      <div>
+        <p class="meal-name">Lunch</p>
+        <ul class="meal-items">
+          <li>Grilled chicken breast, 200 g <span class="g">— 330 kcal</span></li>
+          <li>Brown rice, 1.5 cups cooked <span class="g">— 325 kcal</span></li>
+          <li>Mixed vegetables + 1 tbsp olive oil <span class="g">— 170 kcal</span></li>
+        </ul>
+      </div>
+      <div class="meal-macros">825 kcal<br><span class="p">71g P</span> · 78g C · 24g F</div>
+    </div>
+
+    <div class="meal">
+      <div class="meal-time">4:30 PM</div>
+      <div>
+        <p class="meal-name">Post-workout shake</p>
+        <ul class="meal-items">
+          <li>Whey protein, 1 scoop (30 g) <span class="g">— 120 kcal</span></li>
+          <li>Banana + 250 ml milk <span class="g">— 225 kcal</span></li>
+        </ul>
+      </div>
+      <div class="meal-macros">345 kcal<br><span class="p">33g P</span> · 42g C · 7g F</div>
+    </div>
+
+    <div class="meal">
+      <div class="meal-time">8:00 PM</div>
+      <div>
+        <p class="meal-name">Dinner</p>
+        <ul class="meal-items">
+          <li>Grilled salmon or paneer, 180 g <span class="g">— 370 kcal</span></li>
+          <li>Roasted sweet potato, 200 g <span class="g">— 180 kcal</span></li>
+          <li>Salad + 1 tsp olive oil <span class="g">— 60 kcal</span></li>
+        </ul>
+      </div>
+      <div class="meal-macros">610 kcal<br><span class="p">44g P</span> · 46g C · 27g F</div>
+    </div>
+
+    <div class="day-total">
+      <span>Day total</span>
+      <span>≈2755 kcal · 212g protein</span>
+    </div>
+
+    <div class="tips-block">
+      <p class="tips-head">Tips for a lean (not sloppy) bulk</p>
+      <ul class="tip-list bulk">
+        <li><span class="tip-num">1</span><span>Lift with progressive overload 3–5x/week. Without the training stimulus, the surplus just becomes fat, not muscle.</span></li>
+        <li><span class="tip-num">2</span><span>Weigh yourself daily, use the weekly average. If it's rising faster than ~0.5 kg/week, you're gaining more fat than muscle — trim calories.</span></li>
+        <li><span class="tip-num">3</span><span>Prioritize protein at every meal (25–45g) over cramming carbs — it drives muscle repair and keeps you fuller in a surplus.</span></li>
+        <li><span class="tip-num">4</span><span>Sleep 7–9 hours. Growth hormone release and muscle recovery both depend on it more than any supplement will.</span></li>
+        <li><span class="tip-num">5</span><span>Keep some daily movement (walking, steps) even while bulking — it keeps the surplus from turning into pure fat storage.</span></li>
+        <li><span class="tip-num">6</span><span>Track strength numbers, not just the scale. Weight going up with lifts stalling means the surplus isn't being used to build muscle.</span></li>
+      </ul>
+    </div>
+
+    <div class="tips-block">
+      <p class="tips-head avoid-head">Avoid these while bulking</p>
+      <ul class="avoid-list">
+        <li><span class="avoid-x">✕</span><span>Don't "dirty bulk" — eating anything and everything just adds fat, not muscle. The surplus still needs to be moderate.</span></li>
+        <li><span class="avoid-x">✕</span><span>Don't skip leg day or any muscle group — uneven training builds an uneven physique, not a stronger base.</span></li>
+        <li><span class="avoid-x">✕</span><span>Don't judge progress by the scale alone — a big jump in a week is usually water and food weight, not muscle.</span></li>
+        <li><span class="avoid-x">✕</span><span>Don't cut cardio out completely — some light activity keeps your heart healthy and the fat gain in check.</span></li>
+        <li><span class="avoid-x">✕</span><span>Don't extend the bulk indefinitely — 8–12 weeks, then reassess. Endless surplus just becomes fat storage.</span></li>
+        <li><span class="avoid-x">✕</span><span>Don't neglect sleep for extra late workouts — poor recovery cancels out the extra training volume.</span></li>
+      </ul>
+    </div>
+
+    <div class="tips-block">
+      <p class="tips-head" style="color:var(--slate);">Supplements for the bulk</p>
+      <ul class="supp-list">
+        <li>
+          <div class="supp-top"><span class="supp-name">Whey protein</span><span class="supp-dose">1–2 scoops (25–50g) daily</span></div>
+          <p class="supp-note">Use it to close the gap to your ~150g protein target — post-workout or any meal you're short on. Not required if whole food already covers it.</p>
+        </li>
+        <li>
+          <div class="supp-top"><span class="supp-name">Creatine monohydrate</span><span class="supp-dose">5g daily</span></div>
+          <p class="supp-note">Most researched supplement for strength and muscle size. Take any time of day — consistency matters more than timing. No loading phase needed.</p>
+        </li>
+        <li>
+          <div class="supp-top"><span class="supp-name">Mass gainer <span class="supp-optional">optional</span></span><span class="supp-dose">1 scoop with milk</span></div>
+          <p class="supp-note">Only if you genuinely struggle to eat enough for a surplus. It's just extra calories and carbs in liquid form — whole food is just as good if you can manage it.</p>
+        </li>
+        <li>
+          <div class="supp-top"><span class="supp-name">Multivitamin</span><span class="supp-dose">1 tablet daily</span></div>
+          <p class="supp-note">A cheap insurance policy for micronutrients, especially if extra bulk calories are coming from less varied food.</p>
+        </li>
+        <li>
+          <div class="supp-top"><span class="supp-name">Fish oil (omega-3)</span><span class="supp-dose">1–2g EPA/DHA daily</span></div>
+          <p class="supp-note">Supports joints and heart health as training volume and load go up.</p>
+        </li>
+        <li>
+          <div class="supp-top"><span class="supp-name">Caffeine <span class="supp-optional">optional</span></span><span class="supp-dose">150–200mg pre-workout</span></div>
+          <p class="supp-note">Boosts training energy and focus. Skip if you're sensitive to it or it affects your sleep.</p>
+        </li>
+      </ul>
+    </div>
+
+    <div class="note">Run this phase 8–12 weeks, tracking bodyweight weekly. If gain exceeds ~0.5 kg/week, trim ~150–200 kcal from carbs.</div>
+  </section>
+
+  <!-- CUT PHASE -->
+  <section class="phase" id="phase-cut">
+    <h2 class="phase-title"><span class="accent" style="background:var(--gold)"></span>Cut</h2>
+    <p class="phase-sub">Moderate deficit, protein held high to protect the muscle you just built. Carbs and fat come down, not protein.</p>
+
+    <div class="macro-panel">
+      <h3>Daily Target</h3>
+      <div class="kcal-row"><span>Calories</span><span class="n" id="cut-kcal">~1850</span></div>
+      <div class="macro-line"><span>Protein</span><span class="amt" id="cut-protein">~150 g</span></div>
+      <div class="bar-track"><div class="bar-fill" id="cut-protein-bar" style="width:90%;background:var(--crimson)"></div></div>
+      <div class="macro-line"><span>Carbohydrate</span><span class="amt" id="cut-carbs">~140 g</span></div>
+      <div class="bar-track"><div class="bar-fill" id="cut-carbs-bar" style="width:40%;background:var(--gold)"></div></div>
+      <div class="macro-line"><span>Fat</span><span class="amt" id="cut-fat">~45 g</span></div>
+      <div class="bar-track"><div class="bar-fill" id="cut-fat-bar" style="width:25%;background:var(--slate)"></div></div>
+    </div>
+
+    <div class="meal">
+      <div class="meal-time">7:30 AM</div>
+      <div>
+        <p class="meal-name">Breakfast</p>
+        <ul class="meal-items">
+          <li>2 whole eggs + 4 egg whites <span class="g">— 208 kcal</span></li>
+          <li>1 slice whole-wheat toast <span class="g">— 70 kcal</span></li>
+          <li>Sautéed spinach <span class="g">— 30 kcal</span></li>
+        </ul>
+      </div>
+      <div class="meal-macros">308 kcal<br><span class="p">30g P</span> · 16g C · 11g F</div>
+    </div>
+
+    <div class="meal">
+      <div class="meal-time">10:30 AM</div>
+      <div>
+        <p class="meal-name">Mid-morning</p>
+        <ul class="meal-items">
+          <li>Greek yogurt, 150 g + berries <span class="g">— 140 kcal</span></li>
+          <li>Almonds, 20 g <span class="g">— 116 kcal</span></li>
+        </ul>
+      </div>
+      <div class="meal-macros">256 kcal<br><span class="p">19g P</span> · 20g C · 10g F</div>
+    </div>
+
+    <div class="meal">
+      <div class="meal-time">1:30 PM</div>
+      <div>
+        <p class="meal-name">Lunch</p>
+        <ul class="meal-items">
+          <li>Grilled chicken breast, 200 g <span class="g">— 330 kcal</span></li>
+          <li>Quinoa, ¾ cup cooked <span class="g">— 170 kcal</span></li>
+          <li>Large salad + 1 tsp olive oil <span class="g">— 80 kcal</span></li>
+        </ul>
+      </div>
+      <div class="meal-macros">580 kcal<br><span class="p">70g P</span> · 38g C · 15g F</div>
+    </div>
+
+    <div class="meal">
+      <div class="meal-time">4:30 PM</div>
+      <div>
+        <p class="meal-name">Post-workout shake</p>
+        <ul class="meal-items">
+          <li>Whey protein, 1 scoop + water <span class="g">— 120 kcal</span></li>
+          <li>1 apple <span class="g">— 95 kcal</span></li>
+        </ul>
+      </div>
+      <div class="meal-macros">215 kcal<br><span class="p">24g P</span> · 28g C · 2g F</div>
+    </div>
+
+    <div class="meal">
+      <div class="meal-time">8:00 PM</div>
+      <div>
+        <p class="meal-name">Dinner</p>
+        <ul class="meal-items">
+          <li>Grilled white fish or chicken, 180 g <span class="g">— 250 kcal</span></li>
+          <li>Steamed broccoli, 1.5 cups <span class="g">— 75 kcal</span></li>
+          <li>Small sweet potato, 100 g <span class="g">— 90 kcal</span></li>
+        </ul>
+      </div>
+      <div class="meal-macros">415 kcal<br><span class="p">57g P</span> · 36g C · 5g F</div>
+    </div>
+
+    <div class="day-total">
+      <span>Day total</span>
+      <span>≈1774 kcal · 200g protein</span>
+    </div>
+
+    <div class="tips-block">
+      <p class="tips-head">Tips to actually burn fat, not muscle</p>
+      <ul class="tip-list cut">
+        <li><span class="tip-num">1</span><span>Keep the deficit moderate (~400–600 kcal below maintenance). Too aggressive and you'll burn muscle along with fat.</span></li>
+        <li><span class="tip-num">2</span><span>Keep protein at ~150g+ and keep lifting — this is what signals your body to protect muscle while it burns fat for fuel.</span></li>
+        <li><span class="tip-num">3</span><span>Add daily steps (8,000–10,000) or light cardio. This burns extra fat without cutting calories further or wrecking recovery.</span></li>
+        <li><span class="tip-num">4</span><span>Don't fear fat loss "stalls" — water retention and hormonal shifts hide fat loss for days. Judge by 2-week weight trend, not daily numbers.</span></li>
+        <li><span class="tip-num">5</span><span>Drink water before meals and eat fibrous veg first — both help you feel full on fewer calories.</span></li>
+        <li><span class="tip-num">6</span><span>Save some calories for a weekly treat meal. It makes the deficit sustainable and stops the all-or-nothing crash-diet cycle.</span></li>
+      </ul>
+    </div>
+
+    <div class="tips-block">
+      <p class="tips-head avoid-head">Avoid these while cutting</p>
+      <ul class="avoid-list">
+        <li><span class="avoid-x">✕</span><span>Don't slash calories too hard — an extreme deficit burns muscle along with fat and tanks your energy for training.</span></li>
+        <li><span class="avoid-x">✕</span><span>Don't drop protein to save calories — cut carbs or fat first, protein is what protects your muscle in a deficit.</span></li>
+        <li><span class="avoid-x">✕</span><span>Don't stop lifting to "save energy" — skipping training removes the exact signal that tells your body to keep the muscle.</span></li>
+        <li><span class="avoid-x">✕</span><span>Don't chase the scale daily — water, sodium, and hormones swing it day to day. Watch the weekly average instead.</span></li>
+        <li><span class="avoid-x">✕</span><span>Don't rely on cardio alone to create the deficit — food intake matters more than the minutes on a treadmill.</span></li>
+        <li><span class="avoid-x">✕</span><span>Don't cut for months without a break — a maintenance break every 6–8 weeks protects your metabolism and mental energy.</span></li>
+      </ul>
+    </div>
+
+    <div class="tips-block">
+      <p class="tips-head" style="color:var(--slate);">Supplements for the cut</p>
+      <ul class="supp-list">
+        <li>
+          <div class="supp-top"><span class="supp-name">Whey protein</span><span class="supp-dose">1–2 scoops (25–50g) daily</span></div>
+          <p class="supp-note">Keeps protein at ~150g even with fewer total calories to work with — often easier than fitting in that much from whole food alone in a deficit.</p>
+        </li>
+        <li>
+          <div class="supp-top"><span class="supp-name">Creatine monohydrate</span><span class="supp-dose">5g daily</span></div>
+          <p class="supp-note">Keep taking it through the cut — it helps you hold onto strength and muscle while calories are down.</p>
+        </li>
+        <li>
+          <div class="supp-top"><span class="supp-name">Caffeine</span><span class="supp-dose">150–200mg pre-workout</span></div>
+          <p class="supp-note">Helps you train hard on lower energy and can mildly curb appetite. Skip late in the day so it doesn't wreck your sleep.</p>
+        </li>
+        <li>
+          <div class="supp-top"><span class="supp-name">Multivitamin</span><span class="supp-dose">1 tablet daily</span></div>
+          <p class="supp-note">More important now than in the bulk — fewer total calories means less room for micronutrients to come from food alone.</p>
+        </li>
+        <li>
+          <div class="supp-top"><span class="supp-name">Fiber (psyllium husk) <span class="supp-optional">optional</span></span><span class="supp-dose">5g with water</span></div>
+          <p class="supp-note">Helps you feel full on fewer calories and keeps digestion steady when food volume drops.</p>
+        </li>
+        <li>
+          <div class="supp-top"><span class="supp-name">Electrolytes <span class="supp-optional">optional</span></span><span class="supp-dose">as needed</span></div>
+          <p class="supp-note">Useful if you add more cardio or sweat more — prevents cramping and the flat, tired feeling that comes with a deficit.</p>
+        </li>
+      </ul>
+    </div>
+
+    <div class="note">Start this phase only after the bulk. Target ~0.5 kg/week loss — if it stalls two weeks running, drop another ~100–150 kcal from carbs or fat, never protein.</div>
+  </section>
+
+  <div class="general-tips">
+    <h2 class="general-title"><span class="accent" style="background:var(--slate);width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:10px;"></span>Muscle vs. Fat — the two levers</h2>
+    <p class="general-sub">Building muscle and burning fat use opposite calorie settings, which is exactly why the two phases are split. These apply across both.</p>
+
+    <div class="tip-cols">
+      <div>
+        <p class="tip-col-head" style="color:var(--crimson);">Gain muscle</p>
+        <ul class="tip-list bulk">
+          <li><span class="tip-num">1</span><span>Progressive overload is non-negotiable — add weight, reps, or sets over time or the muscle has no reason to grow.</span></li>
+          <li><span class="tip-num">2</span><span>Train each muscle group 2x/week minimum — more frequent stimulus beats one brutal weekly session.</span></li>
+          <li><span class="tip-num">3</span><span>Hit 1.6–2.2g protein per kg bodyweight daily, spread across 4–5 meals rather than one big serving.</span></li>
+          <li><span class="tip-num">4</span><span>Rest 48 hours before hitting the same muscle group hard again — growth happens during recovery, not the workout.</span></li>
+        </ul>
+      </div>
+      <div>
+        <p class="tip-col-head" style="color:var(--gold);">Burn fat</p>
+        <ul class="tip-list cut">
+          <li><span class="tip-num">1</span><span>A calorie deficit is the only thing that burns fat — no food, timing, or supplement replaces that.</span></li>
+          <li><span class="tip-num">2</span><span>Keep lifting through the deficit. It's the single biggest factor in losing fat instead of muscle.</span></li>
+          <li><span class="tip-num">3</span><span>Add 2–3 short cardio or brisk-walk sessions a week to increase the deficit without cutting food further.</span></li>
+          <li><span class="tip-num">4</span><span>Manage stress and sleep — poor sleep raises cortisol and hunger hormones, making fat loss noticeably harder.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="glossary">
+    <h2 class="general-title"><span class="accent" style="background:var(--ink);width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:10px;"></span>Glossary</h2>
+    <p class="general-sub">The vocabulary behind this plan — knowing what these mean helps you adjust things yourself instead of guessing.</p>
+
+    <div class="glossary-grid">
+      <div>
+        <div class="term">
+          <div class="term-head"><span class="term-tag cut-tag">Cut</span><span class="term-name">Calorie deficit</span></div>
+          <p class="term-def">Eating fewer calories than your body burns in a day. This is the only thing that forces your body to release stored fat for energy.</p>
+        </div>
+        <div class="term">
+          <div class="term-head"><span class="term-tag bulk-tag">Bulk</span><span class="term-name">Calorie surplus</span></div>
+          <p class="term-def">Eating more calories than you burn. Needed to build new muscle tissue — your body can't build much from nothing.</p>
+        </div>
+        <div class="term">
+          <div class="term-head"><span class="term-tag both-tag">Both</span><span class="term-name">TDEE</span></div>
+          <p class="term-def">Total Daily Energy Expenditure — the total calories your body burns in a day (breathing, digestion, movement, exercise). Your surplus or deficit is measured against this number.</p>
+        </div>
+        <div class="term">
+          <div class="term-head"><span class="term-tag both-tag">Both</span><span class="term-name">BMR</span></div>
+          <p class="term-def">Basal Metabolic Rate — calories burned just staying alive at rest, before any movement is added. TDEE = BMR + activity.</p>
+        </div>
+        <div class="term">
+          <div class="term-head"><span class="term-tag bulk-tag">Bulk</span><span class="term-name">Progressive overload</span></div>
+          <p class="term-def">Gradually increasing the weight, reps, or sets you lift over time. Muscles only grow when they're forced to handle more than they're used to.</p>
+        </div>
+        <div class="term">
+          <div class="term-head"><span class="term-tag bulk-tag">Bulk</span><span class="term-name">Muscle protein synthesis</span></div>
+          <p class="term-def">The process where your body repairs and rebuilds muscle fibers after training — using the protein you eat as raw material. This is literally "gaining muscle" at the cellular level.</p>
+        </div>
+      </div>
+      <div>
+        <div class="term">
+          <div class="term-head"><span class="term-tag both-tag">Both</span><span class="term-name">Macronutrients (macros)</span></div>
+          <p class="term-def">The three sources of calories: protein (muscle repair), carbohydrate (energy/fuel), and fat (hormones, cell function). Tracked in grams, not just total calories.</p>
+        </div>
+        <div class="term">
+          <div class="term-head"><span class="term-tag both-tag">Both</span><span class="term-name">Body recomposition</span></div>
+          <p class="term-def">Losing fat and gaining muscle at the same time. Possible for beginners, but slower and less reliable than doing a dedicated bulk then cut — which is why this plan splits the two.</p>
+        </div>
+        <div class="term">
+          <div class="term-head"><span class="term-tag cut-tag">Cut</span><span class="term-name">NEAT</span></div>
+          <p class="term-def">Non-Exercise Activity Thermogenesis — calories burned from daily movement that isn't a workout (walking, fidgeting, chores). A major, underrated fat-loss lever.</p>
+        </div>
+        <div class="term">
+          <div class="term-head"><span class="term-tag cut-tag">Cut</span><span class="term-name">Refeed day</span></div>
+          <p class="term-def">A planned day of eating at maintenance calories during a cut, used to ease diet fatigue and support training performance without derailing fat loss.</p>
+        </div>
+        <div class="term">
+          <div class="term-head"><span class="term-tag both-tag">Both</span><span class="term-name">DOMS</span></div>
+          <p class="term-def">Delayed Onset Muscle Soreness — the ache 24–48 hours after a hard workout. Normal and expected; not a required sign that a workout "worked."</p>
+        </div>
+        <div class="term">
+          <div class="term-head"><span class="term-tag both-tag">Both</span><span class="term-name">Maintenance calories</span></div>
+          <p class="term-def">The calorie amount at which your weight stays roughly stable — the baseline both the bulk (above it) and cut (below it) are measured from.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="training">
+    <h2 class="general-title"><span class="accent" style="background:var(--crimson);width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:10px;"></span>Training Split</h2>
+    <p class="training-note">Your 5-day split, checklist-style — tap to open a day, check off sets as you go. Same split works for both bulk and cut; only your calories and cardio amount change between phases.</p>
+
+    <details class="day-card" open>
+      <summary>
+        <div class="day-card-head">
+          <span class="day-dot" style="background:var(--crimson);"></span>
+          <span class="day-name">Chest &amp; Tricep</span>
+        </div>
+        <div class="day-card-head">
+          <span class="day-count">12 exercises</span>
+          <span class="day-chevron">▾</span>
+        </div>
+      </summary>
+      <div class="day-body">
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Warm-up</span><span class="ex-sets">10 mins</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Pull over</span><span class="ex-sets">12x1, 10x2, 8x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Incline bench press</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Incline chest press machine</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Bench press</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Dumbbell flies</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Decline chest press machine</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Tricep pushdown bar</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Dumbbell overhead tricep</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Tricep pushdown rope</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Lying down tricep pushdown (z bar)</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Close grip tricep press</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Reverse tricep pushdown</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+      </div>
+    </details>
+
+    <details class="day-card">
+      <summary>
+        <div class="day-card-head">
+          <span class="day-dot" style="background:var(--gold);"></span>
+          <span class="day-name">Biceps &amp; Back</span>
+        </div>
+        <div class="day-card-head">
+          <span class="day-count">11 exercises</span>
+          <span class="day-chevron">▾</span>
+        </div>
+      </summary>
+      <div class="day-body">
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Warm-up (pull-ups)</span><span class="ex-sets">10x3</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Lat pulldown</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Bent over row</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">V bar pull</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Dumbbell one arm row</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Close grip (opposite side)</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Hypertension</span><span class="ex-sets">10x4</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Barbell curl</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Preacher curl</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Incline curl</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Hammer curl (rope)</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Reverse curl</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Close grip</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+      </div>
+    </details>
+
+    <details class="day-card">
+      <summary>
+        <div class="day-card-head">
+          <span class="day-dot" style="background:var(--slate);"></span>
+          <span class="day-name">Leg &amp; Shoulders</span>
+        </div>
+        <div class="day-card-head">
+          <span class="day-count">11 exercises</span>
+          <span class="day-chevron">▾</span>
+        </div>
+      </summary>
+      <div class="day-body">
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Warm-up (walk &amp; squats)</span><span class="ex-sets">10 mins</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Squats in machine</span><span class="ex-sets">10x4</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Leg extensions</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Leg press</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Inner thigh</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">RDL (dumbbell)</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Leg curl</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Shoulder press (front barbell)</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Shoulder press (back barbell)</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Shoulder press (dumbbell)</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Front raises</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Lateral raises</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Face pull</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Shrugs</span><span class="ex-sets">10x1, 8x2, 6x1</span></div>
+      </div>
+    </details>
+
+    <details class="day-card">
+      <summary>
+        <div class="day-card-head">
+          <span class="day-dot" style="background:var(--crimson);"></span>
+          <span class="day-name">Abs &amp; Core</span>
+        </div>
+        <div class="day-card-head">
+          <span class="day-count">9 exercises</span>
+          <span class="day-chevron">▾</span>
+        </div>
+      </summary>
+      <div class="day-body">
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Warm-up (dead bug)</span><span class="ex-sets">2x10</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Hanging leg raises</span><span class="ex-sets">3x12</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Cable crunches</span><span class="ex-sets">3x15</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Russian twists</span><span class="ex-sets">3x20 (each side)</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Weighted sit-ups</span><span class="ex-sets">3x15</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Bicycle crunches</span><span class="ex-sets">3x20</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Ab wheel rollout</span><span class="ex-sets">3x10</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Plank</span><span class="ex-sets">3x45 sec</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Side plank</span><span class="ex-sets">3x30 sec (each side)</span></div>
+      </div>
+    </details>
+
+    <details class="day-card">
+      <summary>
+        <div class="day-card-head">
+          <span class="day-dot" style="background:var(--gold);"></span>
+          <span class="day-name">Fat Burning / Conditioning</span>
+        </div>
+        <div class="day-card-head">
+          <span class="day-count">9 exercises</span>
+          <span class="day-chevron">▾</span>
+        </div>
+      </summary>
+      <div class="day-body">
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Warm-up (jump rope)</span><span class="ex-sets">5 mins</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Kettlebell swings</span><span class="ex-sets">4x15</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Battle ropes</span><span class="ex-sets">4x30 sec</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Burpees</span><span class="ex-sets">4x12</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Jump squats</span><span class="ex-sets">4x15</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Mountain climbers</span><span class="ex-sets">4x30 sec</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Rowing machine sprints</span><span class="ex-sets">6x250m</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Incline treadmill walk</span><span class="ex-sets">20 mins</span></div>
+        <div class="ex-row"><input type="checkbox" onchange="toggleDone(this)"><span class="ex-name">Stair climber</span><span class="ex-sets">15 mins</span></div>
+      </div>
+    </details>
+
+    <p class="training-note" style="margin-top:18px;">During the <strong>cut</strong>, slot Fat Burning / Conditioning in 2–3x/week on top of your lifting days. During the <strong>bulk</strong>, 1x/week is plenty — more cardio than that starts eating into recovery and the surplus you need to grow.</p>
+  </div>
+
+  <div class="note" style="margin-top:40px;">This is a general structure, not individual medical or dietetic advice. Swap proteins/carbs for foods you actually like and can sustain — adherence beats the "perfect" plan every time. Supplements support the plan, they don't replace it — food and training come first. If you have any health conditions, take medication, or are pregnant/breastfeeding, check with a doctor before starting any supplement.</div>
+
+</div>
+
+<script>
+  function setPhase(phase){
+    const track = document.getElementById('track');
+    const bulkSec = document.getElementById('phase-bulk');
+    const cutSec = document.getElementById('phase-cut');
+    const labelBulk = document.getElementById('label-bulk');
+    const labelCut = document.getElementById('label-cut');
+    const caption = document.getElementById('caption');
+
+    if(phase === 'cut'){
+      track.classList.add('cut');
+      bulkSec.classList.remove('show');
+      cutSec.classList.add('show');
+      labelBulk.classList.remove('active');
+      labelCut.classList.add('active');
+      caption.textContent = 'Phase 2 — reveal the muscle in a controlled deficit';
+    } else {
+      track.classList.remove('cut');
+      cutSec.classList.remove('show');
+      bulkSec.classList.add('show');
+      labelCut.classList.remove('active');
+      labelBulk.classList.add('active');
+      caption.textContent = 'Phase 1 — build muscle in a modest surplus';
+    }
+  }
+
+  function cmToFeetInches(cm){
+    const totalIn = cm / 2.54;
+    const ft = Math.floor(totalIn / 12);
+    const inch = Math.round(totalIn % 12);
+    return ft + "'" + inch + '"';
+  }
+
+  function recalculate(persist){
+    const weight = parseFloat(document.getElementById('in-weight').value) || 60;
+    const height = parseFloat(document.getElementById('in-height').value) || 168;
+    const age = parseFloat(document.getElementById('in-age').value) || 25;
+    const sex = document.getElementById('in-sex').value;
+    const activity = parseFloat(document.getElementById('in-activity').value) || 1.55;
+
+    // BMR — Mifflin-St Jeor
+    let bmr = (10 * weight) + (6.25 * height) - (5 * age);
+    bmr += (sex === 'male') ? 5 : -161;
+    const tdee = bmr * activity;
+
+    // Targets
+    const bulkKcal = Math.round(tdee + 350);
+    const cutKcal = Math.round(tdee - 500);
+
+    // Protein: ~2.5 g/kg in both phases (high protein, muscle-sparing)
+    const proteinG = Math.round(weight * 2.5);
+    const proteinKcal = proteinG * 4;
+
+    // Bulk fat ~25% of calories, remainder carbs
+    const bulkFatG = Math.round((bulkKcal * 0.25) / 9);
+    const bulkCarbG = Math.max(0, Math.round((bulkKcal - proteinKcal - (bulkFatG * 9)) / 4));
+
+    // Cut fat ~22% of calories, remainder carbs
+    const cutFatG = Math.round((cutKcal * 0.22) / 9);
+    const cutCarbG = Math.max(0, Math.round((cutKcal - proteinKcal - (cutFatG * 9)) / 4));
+
+    const bmi = (weight / Math.pow(height / 100, 2));
+
+    // Update hero stats
+    document.getElementById('stat-weight').textContent = weight + ' kg';
+    document.getElementById('stat-height').textContent = Math.round(height) + ' cm';
+    document.getElementById('stat-bmi').textContent = '~' + bmi.toFixed(1);
+
+    // Update bulk panel
+    document.getElementById('bulk-kcal').textContent = '~' + bulkKcal;
+    document.getElementById('bulk-protein').textContent = '~' + proteinG + ' g';
+    document.getElementById('bulk-carbs').textContent = '~' + bulkCarbG + ' g';
+    document.getElementById('bulk-fat').textContent = '~' + bulkFatG + ' g';
+    document.getElementById('bulk-protein-bar').style.width = Math.min(100, Math.round((proteinKcal / bulkKcal) * 100)) + '%';
+    document.getElementById('bulk-carbs-bar').style.width = Math.min(100, Math.round(((bulkCarbG * 4) / bulkKcal) * 100)) + '%';
+    document.getElementById('bulk-fat-bar').style.width = Math.min(100, Math.round(((bulkFatG * 9) / bulkKcal) * 100)) + '%';
+
+    // Update cut panel
+    document.getElementById('cut-kcal').textContent = '~' + cutKcal;
+    document.getElementById('cut-protein').textContent = '~' + proteinG + ' g';
+    document.getElementById('cut-carbs').textContent = '~' + cutCarbG + ' g';
+    document.getElementById('cut-fat').textContent = '~' + cutFatG + ' g';
+    document.getElementById('cut-protein-bar').style.width = Math.min(100, Math.round((proteinKcal / cutKcal) * 100)) + '%';
+    document.getElementById('cut-carbs-bar').style.width = Math.min(100, Math.round(((cutCarbG * 4) / cutKcal) * 100)) + '%';
+    document.getElementById('cut-fat-bar').style.width = Math.min(100, Math.round(((cutFatG * 9) / cutKcal) * 100)) + '%';
+
+    if(persist) saveStats({weight, height, age, sex, activity});
+  }
+
+  async function saveStats(stats){
+    const statusEl = document.getElementById('editor-status');
+    try{
+      if(window.storage){
+        await window.storage.set('bulk-cut-stats', JSON.stringify(stats));
+      }
+      statusEl.textContent = 'Saved';
+    }catch(e){
+      statusEl.textContent = 'Not saved (this session only)';
+    }
+    statusEl.classList.add('show');
+    setTimeout(() => statusEl.classList.remove('show'), 2000);
+  }
+
+  async function loadStats(){
+    try{
+      if(window.storage){
+        const result = await window.storage.get('bulk-cut-stats');
+        if(result && result.value){
+          const stats = JSON.parse(result.value);
+          document.getElementById('in-weight').value = stats.weight;
+          document.getElementById('in-height').value = stats.height;
+          document.getElementById('in-age').value = stats.age;
+          document.getElementById('in-sex').value = stats.sex;
+          document.getElementById('in-activity').value = stats.activity;
+        }
+      }
+    }catch(e){
+      // no saved stats yet — defaults stay as-is
+    }
+    recalculate(false);
+  }
+
+  function toggleDone(checkbox){
+    const row = checkbox.closest('.ex-row');
+    row.classList.toggle('done', checkbox.checked);
+  }
+
+  ['in-weight','in-height','in-age','in-sex','in-activity'].forEach(id => {
+    document.getElementById(id).addEventListener('change', () => recalculate(true));
+  });
+
+  loadStats();
+</script>
+
+</body>
+</html>

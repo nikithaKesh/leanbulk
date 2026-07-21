@@ -327,6 +327,45 @@
     letter-spacing:0.04em;
   }
 
+  /* MEAL PLAN VARIANTS */
+  .plan-selector{
+    display:flex;
+    gap:8px;
+    margin:8px 0 26px;
+    flex-wrap:wrap;
+  }
+  .plan-pill{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    padding:8px 16px;
+    border-radius:20px;
+    border:1.5px solid var(--ink);
+    background:transparent;
+    color:var(--ink);
+    cursor:pointer;
+    transition:background 0.2s, color 0.2s;
+  }
+  .plan-pill.active{
+    background:var(--ink);
+    color:var(--cream);
+  }
+  .plan-pill.active.cut-active{
+    background:var(--gold);
+    color:var(--ink);
+    border-color:var(--gold);
+  }
+  .plan-content{display:none;}
+  .plan-content.show{display:block;}
+  .plan-blurb{
+    font-size:13px;
+    color:var(--slate);
+    margin:0 0 20px;
+    max-width:560px;
+    line-height:1.55;
+  }
+
   .note{
     margin-top:36px;
     padding:16px 18px;
@@ -713,72 +752,222 @@
       <div class="bar-track"><div class="bar-fill" id="bulk-fat-bar" style="width:45%;background:var(--slate)"></div></div>
     </div>
 
-    <div class="meal">
-      <div class="meal-time">7:30 AM</div>
-      <div>
-        <p class="meal-name">Breakfast</p>
-        <ul class="meal-items">
-          <li>3 whole eggs + 3 egg whites, scrambled <span class="g">— 261 kcal</span></li>
-          <li>2 slices whole-wheat toast, 1 tbsp peanut butter <span class="g">— 235 kcal</span></li>
-          <li>1 banana <span class="g">— 105 kcal</span></li>
-        </ul>
-      </div>
-      <div class="meal-macros">601 kcal<br><span class="p">40g P</span> · 56g C · 25g F</div>
+    <div class="plan-selector">
+      <button class="plan-pill active" id="bulk-pill-a" onclick="selectPlan('bulk','a')">Plan A</button>
+      <button class="plan-pill" id="bulk-pill-b" onclick="selectPlan('bulk','b')">Plan B</button>
+      <button class="plan-pill" id="bulk-pill-c" onclick="selectPlan('bulk','c')">Plan C</button>
     </div>
 
-    <div class="meal">
-      <div class="meal-time">10:30 AM</div>
-      <div>
-        <p class="meal-name">Mid-morning</p>
-        <ul class="meal-items">
-          <li>Greek yogurt, 200 g <span class="g">— 130 kcal</span></li>
-          <li>Granola, 40 g + 1 tbsp honey <span class="g">— 244 kcal</span></li>
-        </ul>
+    <div class="plan-content show" id="bulk-plan-a">
+      <p class="plan-blurb">Classic — eggs, chicken, salmon, rice.</p>
+      <div class="meal">
+        <div class="meal-time">7:30 AM</div>
+        <div>
+          <p class="meal-name">Breakfast</p>
+          <ul class="meal-items">
+            <li>3 whole eggs + 3 egg whites, scrambled <span class="g">— 261 kcal</span></li>
+            <li>2 slices whole-wheat toast, 1 tbsp peanut butter <span class="g">— 235 kcal</span></li>
+            <li>1 banana <span class="g">— 105 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">601 kcal<br><span class="p">40g P</span> · 56g C · 25g F</div>
       </div>
-      <div class="meal-macros">374 kcal<br><span class="p">24g P</span> · 53g C · 6g F</div>
+
+      <div class="meal">
+        <div class="meal-time">10:30 AM</div>
+        <div>
+          <p class="meal-name">Mid-morning</p>
+          <ul class="meal-items">
+            <li>Greek yogurt, 200 g <span class="g">— 130 kcal</span></li>
+            <li>Granola, 40 g + 1 tbsp honey <span class="g">— 244 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">374 kcal<br><span class="p">24g P</span> · 53g C · 6g F</div>
+      </div>
+
+      <div class="meal">
+        <div class="meal-time">1:30 PM</div>
+        <div>
+          <p class="meal-name">Lunch</p>
+          <ul class="meal-items">
+            <li>Grilled chicken breast, 200 g <span class="g">— 330 kcal</span></li>
+            <li>Brown rice, 1.5 cups cooked <span class="g">— 325 kcal</span></li>
+            <li>Mixed vegetables + 1 tbsp olive oil <span class="g">— 170 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">825 kcal<br><span class="p">71g P</span> · 78g C · 24g F</div>
+      </div>
+
+      <div class="meal">
+        <div class="meal-time">4:30 PM</div>
+        <div>
+          <p class="meal-name">Post-workout shake</p>
+          <ul class="meal-items">
+            <li>Whey protein, 1 scoop (30 g) <span class="g">— 120 kcal</span></li>
+            <li>Banana + 250 ml milk <span class="g">— 225 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">345 kcal<br><span class="p">33g P</span> · 42g C · 7g F</div>
+      </div>
+
+      <div class="meal">
+        <div class="meal-time">8:00 PM</div>
+        <div>
+          <p class="meal-name">Dinner</p>
+          <ul class="meal-items">
+            <li>Grilled salmon or paneer, 180 g <span class="g">— 370 kcal</span></li>
+            <li>Roasted sweet potato, 200 g <span class="g">— 180 kcal</span></li>
+            <li>Salad + 1 tsp olive oil <span class="g">— 60 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">610 kcal<br><span class="p">44g P</span> · 46g C · 27g F</div>
+      </div>
+
+      <div class="day-total">
+        <span>Day total</span>
+        <span>≈2755 kcal · 212g protein</span>
+      </div>
     </div>
 
-    <div class="meal">
-      <div class="meal-time">1:30 PM</div>
-      <div>
-        <p class="meal-name">Lunch</p>
-        <ul class="meal-items">
-          <li>Grilled chicken breast, 200 g <span class="g">— 330 kcal</span></li>
-          <li>Brown rice, 1.5 cups cooked <span class="g">— 325 kcal</span></li>
-          <li>Mixed vegetables + 1 tbsp olive oil <span class="g">— 170 kcal</span></li>
-        </ul>
+    <div class="plan-content" id="bulk-plan-b">
+      <p class="plan-blurb">Vegetarian-leaning — paneer, tofu, rajma, oats.</p>
+      <div class="meal">
+        <div class="meal-time">7:30 AM</div>
+        <div>
+          <p class="meal-name">Breakfast</p>
+          <ul class="meal-items">
+            <li>Oats, 60 g cooked in milk (250 ml) <span class="g">— 345 kcal</span></li>
+            <li>Whey protein, 1 scoop + 1 tbsp peanut butter <span class="g">— 215 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">560 kcal<br><span class="p">44g P</span> · 58g C · 19g F</div>
       </div>
-      <div class="meal-macros">825 kcal<br><span class="p">71g P</span> · 78g C · 24g F</div>
+
+      <div class="meal">
+        <div class="meal-time">10:30 AM</div>
+        <div>
+          <p class="meal-name">Mid-morning</p>
+          <ul class="meal-items">
+            <li>Paneer bhurji, 150 g <span class="g">— 397 kcal</span></li>
+            <li>2 whole-wheat rotis <span class="g">— 240 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">637 kcal<br><span class="p">33g P</span> · 50g C · 35g F</div>
+      </div>
+
+      <div class="meal">
+        <div class="meal-time">1:30 PM</div>
+        <div>
+          <p class="meal-name">Lunch</p>
+          <ul class="meal-items">
+            <li>Rajma (kidney bean curry), 1.5 cups <span class="g">— 330 kcal</span></li>
+            <li>Brown rice, 1 cup cooked <span class="g">— 215 kcal</span></li>
+            <li>Salad + 1 tsp olive oil <span class="g">— 60 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">605 kcal<br><span class="p">26g P</span> · 104g C · 10g F</div>
+      </div>
+
+      <div class="meal">
+        <div class="meal-time">4:30 PM</div>
+        <div>
+          <p class="meal-name">Post-workout shake</p>
+          <ul class="meal-items">
+            <li>Whey protein, 1 scoop + 250 ml milk <span class="g">— 240 kcal</span></li>
+            <li>1 banana <span class="g">— 105 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">345 kcal<br><span class="p">33g P</span> · 42g C · 7g F</div>
+      </div>
+
+      <div class="meal">
+        <div class="meal-time">8:00 PM</div>
+        <div>
+          <p class="meal-name">Dinner</p>
+          <ul class="meal-items">
+            <li>Tofu stir-fry, 200 g <span class="g">— 288 kcal</span></li>
+            <li>Quinoa, ¾ cup cooked <span class="g">— 170 kcal</span></li>
+            <li>Stir-fried veg + 1 tsp oil <span class="g">— 80 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">538 kcal<br><span class="p">40g P</span> · 46g C · 25g F</div>
+      </div>
+
+      <div class="day-total">
+        <span>Day total</span>
+        <span>≈2685 kcal · 176g protein</span>
+      </div>
     </div>
 
-    <div class="meal">
-      <div class="meal-time">4:30 PM</div>
-      <div>
-        <p class="meal-name">Post-workout shake</p>
-        <ul class="meal-items">
-          <li>Whey protein, 1 scoop (30 g) <span class="g">— 120 kcal</span></li>
-          <li>Banana + 250 ml milk <span class="g">— 225 kcal</span></li>
-        </ul>
+    <div class="plan-content" id="bulk-plan-c">
+      <p class="plan-blurb">Fish &amp; rice-forward — tuna, cottage cheese, chicken thigh.</p>
+      <div class="meal">
+        <div class="meal-time">7:30 AM</div>
+        <div>
+          <p class="meal-name">Breakfast</p>
+          <ul class="meal-items">
+            <li>3 whole eggs, omelette <span class="g">— 210 kcal</span></li>
+            <li>Oats, 50 g cooked in milk (125 ml) + 1 tbsp peanut butter <span class="g">— 343 kcal</span></li>
+            <li>Mixed berries, ½ cup <span class="g">— 40 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">593 kcal<br><span class="p">33g P</span> · 53g C · 28g F</div>
       </div>
-      <div class="meal-macros">345 kcal<br><span class="p">33g P</span> · 42g C · 7g F</div>
-    </div>
 
-    <div class="meal">
-      <div class="meal-time">8:00 PM</div>
-      <div>
-        <p class="meal-name">Dinner</p>
-        <ul class="meal-items">
-          <li>Grilled salmon or paneer, 180 g <span class="g">— 370 kcal</span></li>
-          <li>Roasted sweet potato, 200 g <span class="g">— 180 kcal</span></li>
-          <li>Salad + 1 tsp olive oil <span class="g">— 60 kcal</span></li>
-        </ul>
+      <div class="meal">
+        <div class="meal-time">10:30 AM</div>
+        <div>
+          <p class="meal-name">Mid-morning</p>
+          <ul class="meal-items">
+            <li>Cottage cheese, 200 g <span class="g">— 180 kcal</span></li>
+            <li>Almonds, 15 g + 1 apple <span class="g">— 182 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">362 kcal<br><span class="p">27g P</span> · 36g C · 11g F</div>
       </div>
-      <div class="meal-macros">610 kcal<br><span class="p">44g P</span> · 46g C · 27g F</div>
-    </div>
 
-    <div class="day-total">
-      <span>Day total</span>
-      <span>≈2755 kcal · 212g protein</span>
+      <div class="meal">
+        <div class="meal-time">1:30 PM</div>
+        <div>
+          <p class="meal-name">Lunch</p>
+          <ul class="meal-items">
+            <li>Grilled tuna steak, 200 g <span class="g">— 260 kcal</span></li>
+            <li>Basmati rice, 2 cups cooked <span class="g">— 430 kcal</span></li>
+            <li>Mixed vegetables + 1 tsp oil <span class="g">— 100 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">790 kcal<br><span class="p">69g P</span> · 100g C · 9g F</div>
+      </div>
+
+      <div class="meal">
+        <div class="meal-time">4:30 PM</div>
+        <div>
+          <p class="meal-name">Post-workout shake</p>
+          <ul class="meal-items">
+            <li>Whey protein, 1 scoop <span class="g">— 120 kcal</span></li>
+            <li>Oats, 30 g (dry, mixed in) <span class="g">— 113 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">233 kcal<br><span class="p">28g P</span> · 23g C · 4g F</div>
+      </div>
+
+      <div class="meal">
+        <div class="meal-time">8:00 PM</div>
+        <div>
+          <p class="meal-name">Dinner</p>
+          <ul class="meal-items">
+            <li>Grilled chicken thigh (skinless), 200 g <span class="g">— 370 kcal</span></li>
+            <li>Sweet potato, 250 g <span class="g">— 225 kcal</span></li>
+            <li>Salad + 1 tsp olive oil <span class="g">— 60 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">655 kcal<br><span class="p">51g P</span> · 57g C · 23g F</div>
+      </div>
+
+      <div class="day-total">
+        <span>Day total</span>
+        <span>≈2633 kcal · 208g protein</span>
+      </div>
     </div>
 
     <div class="tips-block">
@@ -854,72 +1043,221 @@
       <div class="bar-track"><div class="bar-fill" id="cut-fat-bar" style="width:25%;background:var(--slate)"></div></div>
     </div>
 
-    <div class="meal">
-      <div class="meal-time">7:30 AM</div>
-      <div>
-        <p class="meal-name">Breakfast</p>
-        <ul class="meal-items">
-          <li>2 whole eggs + 4 egg whites <span class="g">— 208 kcal</span></li>
-          <li>1 slice whole-wheat toast <span class="g">— 70 kcal</span></li>
-          <li>Sautéed spinach <span class="g">— 30 kcal</span></li>
-        </ul>
-      </div>
-      <div class="meal-macros">308 kcal<br><span class="p">30g P</span> · 16g C · 11g F</div>
+    <div class="plan-selector">
+      <button class="plan-pill active cut-active" id="cut-pill-a" onclick="selectPlan('cut','a')">Plan A</button>
+      <button class="plan-pill" id="cut-pill-b" onclick="selectPlan('cut','b')">Plan B</button>
+      <button class="plan-pill" id="cut-pill-c" onclick="selectPlan('cut','c')">Plan C</button>
     </div>
 
-    <div class="meal">
-      <div class="meal-time">10:30 AM</div>
-      <div>
-        <p class="meal-name">Mid-morning</p>
-        <ul class="meal-items">
-          <li>Greek yogurt, 150 g + berries <span class="g">— 140 kcal</span></li>
-          <li>Almonds, 20 g <span class="g">— 116 kcal</span></li>
-        </ul>
+    <div class="plan-content show" id="cut-plan-a">
+      <p class="plan-blurb">Classic — eggs, chicken, white fish.</p>
+      <div class="meal">
+        <div class="meal-time">7:30 AM</div>
+        <div>
+          <p class="meal-name">Breakfast</p>
+          <ul class="meal-items">
+            <li>2 whole eggs + 4 egg whites <span class="g">— 208 kcal</span></li>
+            <li>1 slice whole-wheat toast <span class="g">— 70 kcal</span></li>
+            <li>Sautéed spinach <span class="g">— 30 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">308 kcal<br><span class="p">30g P</span> · 16g C · 11g F</div>
       </div>
-      <div class="meal-macros">256 kcal<br><span class="p">19g P</span> · 20g C · 10g F</div>
+
+      <div class="meal">
+        <div class="meal-time">10:30 AM</div>
+        <div>
+          <p class="meal-name">Mid-morning</p>
+          <ul class="meal-items">
+            <li>Greek yogurt, 150 g + berries <span class="g">— 140 kcal</span></li>
+            <li>Almonds, 20 g <span class="g">— 116 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">256 kcal<br><span class="p">19g P</span> · 20g C · 10g F</div>
+      </div>
+
+      <div class="meal">
+        <div class="meal-time">1:30 PM</div>
+        <div>
+          <p class="meal-name">Lunch</p>
+          <ul class="meal-items">
+            <li>Grilled chicken breast, 200 g <span class="g">— 330 kcal</span></li>
+            <li>Quinoa, ¾ cup cooked <span class="g">— 170 kcal</span></li>
+            <li>Large salad + 1 tsp olive oil <span class="g">— 80 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">580 kcal<br><span class="p">70g P</span> · 38g C · 15g F</div>
+      </div>
+
+      <div class="meal">
+        <div class="meal-time">4:30 PM</div>
+        <div>
+          <p class="meal-name">Post-workout shake</p>
+          <ul class="meal-items">
+            <li>Whey protein, 1 scoop + water <span class="g">— 120 kcal</span></li>
+            <li>1 apple <span class="g">— 95 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">215 kcal<br><span class="p">24g P</span> · 28g C · 2g F</div>
+      </div>
+
+      <div class="meal">
+        <div class="meal-time">8:00 PM</div>
+        <div>
+          <p class="meal-name">Dinner</p>
+          <ul class="meal-items">
+            <li>Grilled white fish or chicken, 180 g <span class="g">— 250 kcal</span></li>
+            <li>Steamed broccoli, 1.5 cups <span class="g">— 75 kcal</span></li>
+            <li>Small sweet potato, 100 g <span class="g">— 90 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">415 kcal<br><span class="p">57g P</span> · 36g C · 5g F</div>
+      </div>
+
+      <div class="day-total">
+        <span>Day total</span>
+        <span>≈1774 kcal · 200g protein</span>
+      </div>
     </div>
 
-    <div class="meal">
-      <div class="meal-time">1:30 PM</div>
-      <div>
-        <p class="meal-name">Lunch</p>
-        <ul class="meal-items">
-          <li>Grilled chicken breast, 200 g <span class="g">— 330 kcal</span></li>
-          <li>Quinoa, ¾ cup cooked <span class="g">— 170 kcal</span></li>
-          <li>Large salad + 1 tsp olive oil <span class="g">— 80 kcal</span></li>
-        </ul>
+    <div class="plan-content" id="cut-plan-b">
+      <p class="plan-blurb">Vegetarian-leaning — egg whites, cottage cheese, paneer, tofu.</p>
+      <div class="meal">
+        <div class="meal-time">7:30 AM</div>
+        <div>
+          <p class="meal-name">Breakfast</p>
+          <ul class="meal-items">
+            <li>6 egg whites, omelette + veggies <span class="g">— 132 kcal</span></li>
+            <li>2 slices whole-wheat toast <span class="g">— 140 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">272 kcal<br><span class="p">28g P</span> · 29g C · 1g F</div>
       </div>
-      <div class="meal-macros">580 kcal<br><span class="p">70g P</span> · 38g C · 15g F</div>
+
+      <div class="meal">
+        <div class="meal-time">10:30 AM</div>
+        <div>
+          <p class="meal-name">Mid-morning</p>
+          <ul class="meal-items">
+            <li>Cottage cheese, 150 g + cucumber/tomato <span class="g">— 155 kcal</span></li>
+            <li>Almonds, 20 g <span class="g">— 116 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">271 kcal<br><span class="p">22g P</span> · 13g C · 13g F</div>
+      </div>
+
+      <div class="meal">
+        <div class="meal-time">1:30 PM</div>
+        <div>
+          <p class="meal-name">Lunch</p>
+          <ul class="meal-items">
+            <li>Grilled paneer tikka (light oil), 150 g <span class="g">— 300 kcal</span></li>
+            <li>Quinoa, ½ cup cooked <span class="g">— 110 kcal</span></li>
+            <li>Salad + 1 tsp olive oil <span class="g">— 60 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">470 kcal<br><span class="p">29g P</span> · 28g C · 29g F</div>
+      </div>
+
+      <div class="meal">
+        <div class="meal-time">4:30 PM</div>
+        <div>
+          <p class="meal-name">Post-workout shake</p>
+          <ul class="meal-items">
+            <li>Whey protein, 1 scoop + water <span class="g">— 120 kcal</span></li>
+            <li>1 small apple <span class="g">— 80 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">200 kcal<br><span class="p">24g P</span> · 24g C · 2g F</div>
+      </div>
+
+      <div class="meal">
+        <div class="meal-time">8:00 PM</div>
+        <div>
+          <p class="meal-name">Dinner</p>
+          <ul class="meal-items">
+            <li>Tofu stir-fry, 180 g <span class="g">— 260 kcal</span></li>
+            <li>Steamed broccoli + quinoa, ⅔ cup <span class="g">— 148 kcal</span></li>
+            <li>Mixed nuts, small handful <span class="g">— 100 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">581 kcal<br><span class="p">45g P</span> · 51g C · 25g F</div>
+      </div>
+
+      <div class="day-total">
+        <span>Day total</span>
+        <span>≈1794 kcal · 148g protein</span>
+      </div>
     </div>
 
-    <div class="meal">
-      <div class="meal-time">4:30 PM</div>
-      <div>
-        <p class="meal-name">Post-workout shake</p>
-        <ul class="meal-items">
-          <li>Whey protein, 1 scoop + water <span class="g">— 120 kcal</span></li>
-          <li>1 apple <span class="g">— 95 kcal</span></li>
-        </ul>
+    <div class="plan-content" id="cut-plan-c">
+      <p class="plan-blurb">Lean &amp; light — turkey, tilapia, rice cakes.</p>
+      <div class="meal">
+        <div class="meal-time">7:30 AM</div>
+        <div>
+          <p class="meal-name">Breakfast</p>
+          <ul class="meal-items">
+            <li>4 egg whites + 1 whole egg + spinach <span class="g">— 158 kcal</span></li>
+            <li>1 slice toast + 1 tbsp peanut butter <span class="g">— 165 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">323 kcal<br><span class="p">28g P</span> · 18g C · 14g F</div>
       </div>
-      <div class="meal-macros">215 kcal<br><span class="p">24g P</span> · 28g C · 2g F</div>
-    </div>
 
-    <div class="meal">
-      <div class="meal-time">8:00 PM</div>
-      <div>
-        <p class="meal-name">Dinner</p>
-        <ul class="meal-items">
-          <li>Grilled white fish or chicken, 180 g <span class="g">— 250 kcal</span></li>
-          <li>Steamed broccoli, 1.5 cups <span class="g">— 75 kcal</span></li>
-          <li>Small sweet potato, 100 g <span class="g">— 90 kcal</span></li>
-        </ul>
+      <div class="meal">
+        <div class="meal-time">10:30 AM</div>
+        <div>
+          <p class="meal-name">Mid-morning</p>
+          <ul class="meal-items">
+            <li>Turkey breast slices, 100 g <span class="g">— 135 kcal</span></li>
+            <li>Rice cakes, 2 pc + almonds, 20 g <span class="g">— 186 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">321 kcal<br><span class="p">35g P</span> · 19g C · 11g F</div>
       </div>
-      <div class="meal-macros">415 kcal<br><span class="p">57g P</span> · 36g C · 5g F</div>
-    </div>
 
-    <div class="day-total">
-      <span>Day total</span>
-      <span>≈1774 kcal · 200g protein</span>
+      <div class="meal">
+        <div class="meal-time">1:30 PM</div>
+        <div>
+          <p class="meal-name">Lunch</p>
+          <ul class="meal-items">
+            <li>Grilled tilapia, 200 g <span class="g">— 200 kcal</span></li>
+            <li>Quinoa, ½ cup cooked <span class="g">— 110 kcal</span></li>
+            <li>Steamed vegetables <span class="g">— 50 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">360 kcal<br><span class="p">48g P</span> · 30g C · 6g F</div>
+      </div>
+
+      <div class="meal">
+        <div class="meal-time">4:30 PM</div>
+        <div>
+          <p class="meal-name">Post-workout shake</p>
+          <ul class="meal-items">
+            <li>Whey protein, 1 scoop + water <span class="g">— 120 kcal</span></li>
+            <li>1 small banana <span class="g">— 90 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">210 kcal<br><span class="p">24g P</span> · 26g C · 2g F</div>
+      </div>
+
+      <div class="meal">
+        <div class="meal-time">8:00 PM</div>
+        <div>
+          <p class="meal-name">Dinner</p>
+          <ul class="meal-items">
+            <li>Grilled chicken breast, 180 g <span class="g">— 297 kcal</span></li>
+            <li>Roasted vegetables + 1 tsp oil <span class="g">— 90 kcal</span></li>
+            <li>Sweet potato, 150 g <span class="g">— 135 kcal</span></li>
+          </ul>
+        </div>
+        <div class="meal-macros">522 kcal<br><span class="p">59g P</span> · 41g C · 11g F</div>
+      </div>
+
+      <div class="day-total">
+        <span>Day total</span>
+        <span>≈1736 kcal · 194g protein</span>
+      </div>
     </div>
 
     <div class="tips-block">
@@ -1329,6 +1667,22 @@
       // no saved stats yet — defaults stay as-is
     }
     recalculate(false);
+  }
+
+  function selectPlan(phaseKey, planLetter){
+    ['a','b','c'].forEach(letter => {
+      const content = document.getElementById(phaseKey + '-plan-' + letter);
+      const pill = document.getElementById(phaseKey + '-pill-' + letter);
+      if(letter === planLetter){
+        content.classList.add('show');
+        pill.classList.add('active');
+        if(phaseKey === 'cut') pill.classList.add('cut-active');
+      } else {
+        content.classList.remove('show');
+        pill.classList.remove('active');
+        pill.classList.remove('cut-active');
+      }
+    });
   }
 
   function toggleDone(checkbox){
